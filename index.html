@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<title>Markly — Marks & Percentage Calculator</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --text:#111827; --muted:#667085;
+  --line:#e6eaf0; --primary:#5b5cf0; --primary2:#8b5cf6;
+  --success:#12b76a; --danger:#f04438; --shadow:0 18px 55px rgba(16,24,40,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
+radial-gradient(circle at 15% 0%,rgba(124,92,246,.12),transparent 28%),
+radial-gradient(circle at 100% 15%,rgba(41,163,255,.10),transparent 30%),var(--bg);color:var(--text)}
+button,input{font:inherit}
+.container{width:min(1160px,92%);margin:auto}
+nav{height:78px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:20px}
+.logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#5b5cf0,#9b5cf6);display:grid;place-items:center;color:#fff;box-shadow:0 8px 22px rgba(91,92,240,.3)}
+.nav-pill{padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#667085;font-size:13px}
+.hero{padding:48px 0 26px;text-align:center}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:7px 11px;border-radius:999px;background:#eeefff;color:#5146d8;font-weight:700;font-size:12px}
+.hero h1{font-size:clamp(38px,6vw,64px);line-height:1.02;margin:18px auto 12px;letter-spacing:-2.8px;max-width:780px}
+.gradient{background:linear-gradient(90deg,#4f46e5,#9333ea);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:17px;max-width:650px;margin:auto;line-height:1.65}
+.app{margin:32px 0 60px;display:grid;grid-template-columns:1.25fr .75fr;gap:22px;align-items:start}
+.card{background:rgba(255,255,255,.9);border:1px solid rgba(230,234,240,.95);border-radius:24px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.panel{padding:25px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.panel h2{font-size:19px;margin:0}.sub{color:var(--muted);font-size:13px;margin-top:5px}
+.subjects{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:1fr 130px 130px 42px;gap:10px;align-items:center}
+.input{width:100%;border:1px solid var(--line);background:#fbfcfe;border-radius:12px;padding:12px 13px;outline:none;transition:.2s}
+.input:focus{border-color:#8b83f7;box-shadow:0 0 0 4px rgba(91,92,240,.09);background:#fff}
+.remove{height:42px;border:0;border-radius:12px;background:#fff0f0;color:var(--danger);cursor:pointer;font-size:18px}
+.add{margin-top:13px;width:100%;border:1px dashed #bfc4d0;background:#fafbff;color:#5146d8;padding:12px;border-radius:13px;font-weight:700;cursor:pointer}
+.actions{display:flex;gap:10px;margin-top:17px}
+.primary,.secondary{border:0;border-radius:13px;padding:13px 18px;font-weight:750;cursor:pointer}
+.primary{background:linear-gradient(135deg,#4f46e5,#8b5cf6);color:#fff;box-shadow:0 9px 22px rgba(91,92,240,.22);flex:1}
+.secondary{background:#f1f3f8;color:#344054}
+.result{padding:27px;background:linear-gradient(145deg,#151a2e,#242a48);color:#fff;overflow:hidden;position:relative}
+.result:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(139,92,246,.24);right:-90px;top:-90px}
+.result>*{position:relative}
+.result-label{color:#b9c0d4;font-size:12px;text-transform:uppercase;letter-spacing:1.2px;font-weight:750}
+.percent{font-size:64px;font-weight:850;letter-spacing:-3px;margin:4px 0 3px}
+.score{font-size:14px;color:#cbd1df}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:23px 0}
+.stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:14px}
+.stat b{display:block;font-size:20px}.stat span{color:#b9c0d4;font-size:12px}
+.grade{padding:13px 14px;border-radius:14px;background:rgba(18,183,106,.12);border:1px solid rgba(18,183,106,.22);display:flex;justify-content:space-between;align-items:center}
+.grade strong{color:#63e6a5}
+.tip{margin-top:14px;color:#aeb6c9;font-size:12px;line-height:1.5}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:60px}
+.feature{padding:20px;border-radius:18px;background:#fff;border:1px solid var(--line)}
+.icon{width:38px;height:38px;border-radius:11px;background:#f0efff;color:#5146d8;display:grid;place-items:center;font-weight:800;margin-bottom:13px}
+.feature b{font-size:14px}.feature p{font-size:12px;color:var(--muted);line-height:1.55;margin:7px 0 0}
+footer{text-align:center;padding:24px;color:#98a2b3;font-size:12px}
+@media(max-width:850px){.app{grid-template-columns:1fr}.row{grid-template-columns:1fr 1fr 1fr 42px}.features{grid-template-columns:1fr}}
+@media(max-width:560px){.hero{padding-top:30px}.hero h1{letter-spacing:-1.7px}.panel{padding:17px}.row{grid-template-columns:1fr 1fr 42px}.row .max{display:none}.actions{flex-direction:column}.percent{font-size:54px}}
+</style>
+</head>
+<body>
+<div class="container">
+<nav>
+  <div class="brand"><div class="logo">%</div> Markly</div>
+  <div class="nav-pill">Free • No sign-up</div>
+</nav>
+
+<section class="hero">
+  <span class="eyebrow">✦ SMART MARKS CALCULATOR</span>
+  <h1>Turn your marks into <span class="gradient">clear results.</span></h1>
+  <p>Calculate total marks, percentage, average and grade in seconds. Built for students, parents and teachers.</p>
+</section>
+
+<main class="app">
+  <section class="card panel">
+    <div class="panel-head">
+      <div><h2>Enter your marks</h2><div class="sub">Add every subject and its maximum marks.</div></div>
+    </div>
+    <div id="subjects" class="subjects"></div>
+    <button class="add" onclick="addSubject()">＋ Add another subject</button>
+    <div class="actions">
+      <button class="primary" onclick="calculate()">Calculate results →</button>
+      <button class="secondary" onclick="resetAll()">Reset</button>
+    </div>
+  </section>
+
+  <aside class="card result">
+    <div class="result-label">Overall percentage</div>
+    <div id="percentage" class="percent">0%</div>
+    <div id="score" class="score">0 / 0 marks</div>
+    <div class="stats">
+      <div class="stat"><b id="total">0</b><span>Total scored</span></div>
+      <div class="stat"><b id="average">0</b><span>Average / subject</span></div>
+    </div>
+    <div class="grade"><span>Grade</span><strong id="grade">—</strong></div>
+    <div class="tip">Your result updates from the marks entered on the left. No data is uploaded or stored.</div>
+  </aside>
+</main>
+
+<section class="features">
+  <div class="feature"><div class="icon">%</div><b>Instant percentage</b><p>Get an accurate percentage from any number of subjects.</p></div>
+  <div class="feature"><div class="icon">Σ</div><b>Smart totals</b><p>Automatically calculates scored marks, maximum marks and average.</p></div>
+  <div class="feature"><div class="icon">A+</div><b>Simple grading</b><p>Quickly see a standard percentage-based grade beside your result.</p></div>
+</section>
+<footer>© 2026 Markly · Marks & Percentage Calculator</footer>
+</div>
+
+<script>
+const defaults=[
+  ["Mathematics",73,80],["Science",72,80],["English",71,80]
+];
+function addSubject(name="",marks="",max=100){
+  const wrap=document.getElementById("subjects");
+  const row=document.createElement("div"); row.className="row";
+  row.innerHTML=`
+    <input class="input name" placeholder="Subject" value="${name}">
+    <input class="input marks" type="number" min="0" placeholder="Marks" value="${marks}">
+    <input class="input max" type="number" min="1" placeholder="Max" value="${max}">
+    <button class="remove" title="Remove" onclick="this.parentElement.remove();calculate()">×</button>`;
+  wrap.appendChild(row);
+}
+function calculate(){
+  let scored=0,max=0,count=0;
+  document.querySelectorAll(".row").forEach(r=>{
+    const m=parseFloat(r.querySelector(".marks").value), x=parseFloat(r.querySelector(".max").value);
+    if(Number.isFinite(m)&&Number.isFinite(x)&&x>0){scored+=Math.min(Math.max(m,0),x);max+=x;count++;}
+  });
+  const pct=max?scored/max*100:0;
+  document.getElementById("percentage").textContent=pct.toFixed(2).replace(/\.00$/,"")+"%";
+  document.getElementById("score").textContent=`${scored} / ${max} marks`;
+  document.getElementById("total").textContent=scored;
+  document.getElementById("average").textContent=count?(scored/count).toFixed(1):"0";
+  document.getElementById("grade").textContent=pct>=90?"A+":pct>=80?"A":pct>=70?"B+":pct>=60?"B":pct>=50?"C":pct>=40?"D":max?"F":"—";
+}
+function resetAll(){
+  document.getElementById("subjects").innerHTML="";
+  defaults.forEach(x=>addSubject(...x)); calculate();
+}
+resetAll();
+document.addEventListener("input",e=>{if(e.target.matches(".marks,.max"))calculate()});
+</script>
+</body>
+</html>
